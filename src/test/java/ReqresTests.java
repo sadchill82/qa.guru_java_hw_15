@@ -13,6 +13,7 @@ public class ReqresTests {
     @BeforeAll
     static void setup() {
         RestAssured.baseURI = "https://reqres.in";
+        RestAssured.basePath = "/api";
     }
 
     @Test
@@ -20,7 +21,7 @@ public class ReqresTests {
     void testSingleUserJsonSchema() {
         given().
         when().
-                get("/api/users/2").
+                get("/users/2").
         then().
                 statusCode(200).
                 body(matchesJsonSchemaInClasspath("single-user-schema.json"));
@@ -32,7 +33,7 @@ public class ReqresTests {
         given().
                 queryParam("page", 2).
         when().
-                get("/api/users").
+                get("/users").
         then().
                 statusCode(200).
                 body("page", equalTo(2)).
@@ -48,7 +49,7 @@ public class ReqresTests {
                 contentType(ContentType.JSON).
                 body(payload).
         when().
-                post("/api/login").
+                post("/login").
         then().
                 statusCode(400).
                 body("error", equalTo("Missing password"));
@@ -60,7 +61,7 @@ public class ReqresTests {
         for (int id = 1; id <= 5; id++) {
             given().
             when().
-                    get("/api/users/{id}", id).
+                    get("/users/{id}", id).
             then().
                     statusCode(200).
                     body("data.id", equalTo(id)).
@@ -78,7 +79,7 @@ public class ReqresTests {
                 contentType(ContentType.JSON).
                 body("{\"name\": \"" + name + "\", \"job\": \"" + job + "\"}").
         when().
-                post("/api/users").
+                post("/users").
         then().
                 statusCode(201).
                 body("name", equalTo(name)).
@@ -88,7 +89,7 @@ public class ReqresTests {
 
         given().
         when().
-                get("/api/users/" + id).
+                get("/users/" + id).
         then().
                 statusCode(anyOf(equalTo(200), equalTo(404))); //костыльный 404
     }
